@@ -1,6 +1,14 @@
 import 'dart:io';
 
 void main() {
+  // Design termial step wise command
+  print(
+      "/-------------------------------\"Design Terminal\"-------------------------------/");
+  print(
+      "//         1. dart pub global activate websocket_template                        //");
+  print(
+      "//         2. setup_wsconfig                                                     //");
+
   // Prompt the user to choose between WebSocket and Socket.IO
   print('Select the setup you want to generate:');
   print('1. WebSocket');
@@ -592,10 +600,24 @@ class CustomButton extends StatelessWidget {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(websocketServiceContent);
 
+      try {
+        Process.runSync('flutter', ['pub', 'add', 'web_socket_channel'],
+            runInShell: true);
+      } catch (e) {
+        print("web_socket_channel package not found");
+      }
+
       print('Generated WebSocket setup files.');
     } else if (choice == '2') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(socketIoClientContent);
+
+      try {
+        Process.runSync('flutter', ['pub', 'add', 'socket_io_client'],
+            runInShell: true);
+      } catch (e) {
+        print("socket_io_client package not found");
+      }
 
       print('Generated Socket.IO setup files.');
     }
@@ -609,6 +631,19 @@ class CustomButton extends StatelessWidget {
     File('assets/connected.json').writeAsStringSync(connectedJsonContent);
     File('assets/connecting.json').writeAsStringSync(connectingJsonContent);
     print('Generated JSON files in the assets directory.');
+
+    // common packages
+    try {
+      Process.runSync('flutter', ['pub', 'add', 'shared_preferences'],
+          runInShell: true);
+    } catch (e) {
+      print("shared_preferences package not found");
+    }
+    try {
+      Process.runSync('flutter', ['pub', 'add', 'lottie'], runInShell: true);
+    } catch (e) {
+      print("lottie package not found");
+    }
 
     print('Generated socketconfig files.');
   } else {
