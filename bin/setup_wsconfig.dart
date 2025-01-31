@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 void main() {
   // Prompt the user to choose between WebSocket and Socket.IO
-  print('Select the setup you want to generate:');
-  print('1. WebSocket');
-  print('2. Socket.IO');
+  debugPrint('Select the setup you want to generate:');
+  debugPrint('1. WebSocket');
+  debugPrint('2. Socket.IO');
   stdout.write('Enter your choice (1 or 2): ');
   final choice = stdin.readLineSync();
 
@@ -15,12 +17,12 @@ void main() {
 
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
-      print('Created socketconfig directory.');
+      debugPrint('Created socketconfig directory.');
     }
 
     if (!assetsDirectory.existsSync()) {
       assetsDirectory.createSync(recursive: true);
-      print('Created assets directory.');
+      debugPrint('Created assets directory.');
     }
 
     // JSON content for connected.json
@@ -591,11 +593,20 @@ class CustomButton extends StatelessWidget {
     if (choice == '1') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(websocketServiceContent);
-      print('Generated WebSocket setup files.');
+
+      // flutter pub add web_socket_channel
+      // Run the Flutter package command
+      Process.runSync('flutter', ['pub', 'add', 'web_socket_channel'],
+          runInShell: true);
+      debugPrint('Generated WebSocket setup files.');
     } else if (choice == '2') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(socketIoClientContent);
-      print('Generated Socket.IO setup files.');
+      // flutter pub add socket_io_client
+      // Run the Flutter package command
+      Process.runSync('flutter', ['pub', 'add', 'socket_io_client'],
+          runInShell: true);
+      debugPrint('Generated Socket.IO setup files.');
     }
 
     // Write common files
@@ -606,10 +617,11 @@ class CustomButton extends StatelessWidget {
     // Write JSON files to the assets directory
     File('assets/connected.json').writeAsStringSync(connectedJsonContent);
     File('assets/connecting.json').writeAsStringSync(connectingJsonContent);
-    print('Generated JSON files in the assets directory.');
+    debugPrint('Generated JSON files in the assets directory.');
 
-    print('Generated socketconfig files.');
+    debugPrint('Generated socketconfig files.');
   } else {
-    print('Invalid choice. Please run the script again and select 1 or 2.');
+    debugPrint(
+        'Invalid choice. Please run the script again and select 1 or 2.');
   }
 }
