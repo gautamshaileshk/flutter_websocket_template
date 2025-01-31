@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 
 void main() {
   // Prompt the user to choose between WebSocket and Socket.IO
@@ -188,7 +187,7 @@ class SocketIOService {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('ws');
-    print("Socket.IO ip: \$url");
+    debugPrint("Socket.IO ip: \$url");
 
     if (url != null && url.isNotEmpty) {
       try {
@@ -592,16 +591,11 @@ class CustomButton extends StatelessWidget {
     if (choice == '1') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(websocketServiceContent);
-      Process.runSync('flutter', ['pub', 'add', 'web_socket_channel'],
-          runInShell: true);
+
       print('Generated WebSocket setup files.');
     } else if (choice == '2') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(socketIoClientContent);
-
-      // Run the Flutter package command
-      Process.runSync('flutter', ['pub', 'add', 'socket_io_client'],
-          runInShell: true);
 
       print('Generated Socket.IO setup files.');
     }
