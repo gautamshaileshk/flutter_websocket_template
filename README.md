@@ -31,12 +31,7 @@ A Flutter package to simplify WebSocket setup and integration in Flutter applica
 
 ---
 
-## **Installation**
-
-### **1. Add this package to your project**
-```bash
-flutter pub add socket_config
-```
+## **Configuration**
 
 ### **2. Generate the configuration files**
 ```bash
