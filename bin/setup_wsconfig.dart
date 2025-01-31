@@ -70,7 +70,7 @@ class WebSocketService {
         await _channel!.ready.then((_) {
           _isConnected = true;
           connectionStatus.value = true;
-          print("WebSocket connected");
+          debugPrint("WebSocket connected");
         });
 
         _channel!.stream.listen(
@@ -80,11 +80,11 @@ class WebSocketService {
           onDone: _handleDisconnect,
           onError: (error) {
             _handleDisconnect();
-            print("WebSocket error");
+            debugPrint("WebSocket error");
           },
         );
       } catch (e) {
-        print("Error connecting to WebSocket:");
+        debugPrint("Error connecting to WebSocket:");
         _reconnectWebSocket();
       }
     } else {
@@ -97,7 +97,7 @@ class WebSocketService {
     _isConnected = false;
     connectionStatus.value = false;
     if (!_isManuallyDisconnected) {
-      print("WebSocket disconnected, attempting to reconnect...");
+      debugPrint("WebSocket disconnected, attempting to reconnect...");
       _reconnectWebSocket();
     }
   }
@@ -117,11 +117,11 @@ class WebSocketService {
         timer.cancel();
         return;
       }
-      print("Attempting to reconnect...");
+      debugPrint("Attempting to reconnect...");
       try {
         await connect();
       } catch (e) {
-        print('Error during reconnection attempt');
+        debugPrint('Error during reconnection attempt');
       }
     });
   }
@@ -132,7 +132,7 @@ class WebSocketService {
       try {
         _channel!.sink.add(message);
       } catch (e) {
-        print("Error sending message");
+        debugPrint("Error sending message");
       }
     } else {
       throw Exception("WebSocket is not connected");
@@ -147,7 +147,7 @@ class WebSocketService {
     _reconnectTimer = null;
     _channel?.sink.close(status.normalClosure);
     _channel = null;
-    print("WebSocket manually disconnected");
+    debugPrint("WebSocket manually disconnected");
   }
 
   // Listen to WebSocket messages
@@ -204,7 +204,7 @@ class SocketIOService {
         _socket!.onConnect((_) {
           _isConnected = true;
           connectionStatus.value = true;
-          print("Socket.IO connected");
+          debugPrint("Socket.IO connected");
         });
 
         _socket!.onDisconnect((_) {
@@ -212,7 +212,7 @@ class SocketIOService {
         });
 
         _socket!.onError((error) {
-          print("Socket.IO error: \$error");
+          debugPrint("Socket.IO error: \$error");
           _handleDisconnect();
         });
 
@@ -221,7 +221,7 @@ class SocketIOService {
           _streamController.add(data);
         });
       } catch (e) {
-        print("Error connecting to Socket.IO: \$e");
+        debugPrint("Error connecting to Socket.IO: \$e");
       }
     } else {
       throw Exception("Socket.IO URL is not set in SharedPreferences");
@@ -233,7 +233,7 @@ class SocketIOService {
     _isConnected = false;
     connectionStatus.value = false;
     if (!_isManuallyDisconnected) {
-      print("Socket.IO disconnected.");
+      debugPrint("Socket.IO disconnected.");
     }
   }
 
@@ -243,7 +243,7 @@ class SocketIOService {
       try {
         _socket!.emit('publish', message);
       } catch (e) {
-        print("Error sending message: \$e");
+        debugPrint("Error sending message: \$e");
       }
     } else {
       throw Exception("Socket.IO is not connected");
@@ -256,7 +256,7 @@ class SocketIOService {
     _isConnected = false;
     _socket?.disconnect();
     _socket = null;
-    print("Socket.IO manually disconnected");
+    debugPrint("Socket.IO manually disconnected");
   }
 
   // Listen to Socket.IO messages
@@ -326,7 +326,7 @@ class _UrlsPageState extends State<UrlsPage> with TickerProviderStateMixin {
         await _storeUrls();
         await widget.webSocketService.connect();
       } catch (e) {
-        print("Error connecting to the server. Please try again.");
+        debugPrint("Error connecting to the server. Please try again.");
         _showErrorDialog("Connection Error", "Failed to connect to the server. Please try again.");
       }
     } else {
