@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 void main() {
   // Prompt the user to choose between WebSocket and Socket.IO
-  debugPrint('Select the setup you want to generate:');
-  debugPrint('1. WebSocket');
-  debugPrint('2. Socket.IO');
+  print('Select the setup you want to generate:');
+  print('1. WebSocket');
+  print('2. Socket.IO');
   stdout.write('Enter your choice (1 or 2): ');
   final choice = stdin.readLineSync();
 
@@ -17,12 +16,12 @@ void main() {
 
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
-      debugPrint('Created socketconfig directory.');
+      print('Created socketconfig directory.');
     }
 
     if (!assetsDirectory.existsSync()) {
       assetsDirectory.createSync(recursive: true);
-      debugPrint('Created assets directory.');
+      print('Created assets directory.');
     }
 
     // JSON content for connected.json
@@ -71,7 +70,7 @@ class WebSocketService {
         await _channel!.ready.then((_) {
           _isConnected = true;
           connectionStatus.value = true;
-          debugPrint("WebSocket connected");
+          print("WebSocket connected");
         });
 
         _channel!.stream.listen(
@@ -81,11 +80,11 @@ class WebSocketService {
           onDone: _handleDisconnect,
           onError: (error) {
             _handleDisconnect();
-            debugPrint("WebSocket error");
+            print("WebSocket error");
           },
         );
       } catch (e) {
-        debugPrint("Error connecting to WebSocket:");
+        print("Error connecting to WebSocket:");
         _reconnectWebSocket();
       }
     } else {
@@ -98,7 +97,7 @@ class WebSocketService {
     _isConnected = false;
     connectionStatus.value = false;
     if (!_isManuallyDisconnected) {
-      debugPrint("WebSocket disconnected, attempting to reconnect...");
+      print("WebSocket disconnected, attempting to reconnect...");
       _reconnectWebSocket();
     }
   }
@@ -118,11 +117,11 @@ class WebSocketService {
         timer.cancel();
         return;
       }
-      debugPrint("Attempting to reconnect...");
+      print("Attempting to reconnect...");
       try {
         await connect();
       } catch (e) {
-        debugPrint('Error during reconnection attempt');
+        print('Error during reconnection attempt');
       }
     });
   }
@@ -133,7 +132,7 @@ class WebSocketService {
       try {
         _channel!.sink.add(message);
       } catch (e) {
-        debugPrint("Error sending message");
+        print("Error sending message");
       }
     } else {
       throw Exception("WebSocket is not connected");
@@ -148,7 +147,7 @@ class WebSocketService {
     _reconnectTimer = null;
     _channel?.sink.close(status.normalClosure);
     _channel = null;
-    debugPrint("WebSocket manually disconnected");
+    print("WebSocket manually disconnected");
   }
 
   // Listen to WebSocket messages
@@ -189,7 +188,7 @@ class SocketIOService {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('ws');
-    debugPrint("Socket.IO ip: \$url");
+    print("Socket.IO ip: \$url");
 
     if (url != null && url.isNotEmpty) {
       try {
@@ -205,7 +204,7 @@ class SocketIOService {
         _socket!.onConnect((_) {
           _isConnected = true;
           connectionStatus.value = true;
-          debugPrint("Socket.IO connected");
+          print("Socket.IO connected");
         });
 
         _socket!.onDisconnect((_) {
@@ -213,7 +212,7 @@ class SocketIOService {
         });
 
         _socket!.onError((error) {
-          debugPrint("Socket.IO error: \$error");
+          print("Socket.IO error: \$error");
           _handleDisconnect();
         });
 
@@ -222,7 +221,7 @@ class SocketIOService {
           _streamController.add(data);
         });
       } catch (e) {
-        debugPrint("Error connecting to Socket.IO: \$e");
+        print("Error connecting to Socket.IO: \$e");
       }
     } else {
       throw Exception("Socket.IO URL is not set in SharedPreferences");
@@ -234,7 +233,7 @@ class SocketIOService {
     _isConnected = false;
     connectionStatus.value = false;
     if (!_isManuallyDisconnected) {
-      debugPrint("Socket.IO disconnected.");
+      print("Socket.IO disconnected.");
     }
   }
 
@@ -244,7 +243,7 @@ class SocketIOService {
       try {
         _socket!.emit('publish', message);
       } catch (e) {
-        debugPrint("Error sending message: \$e");
+        print("Error sending message: \$e");
       }
     } else {
       throw Exception("Socket.IO is not connected");
@@ -257,7 +256,7 @@ class SocketIOService {
     _isConnected = false;
     _socket?.disconnect();
     _socket = null;
-    debugPrint("Socket.IO manually disconnected");
+    print("Socket.IO manually disconnected");
   }
 
   // Listen to Socket.IO messages
@@ -327,7 +326,7 @@ class _UrlsPageState extends State<UrlsPage> with TickerProviderStateMixin {
         await _storeUrls();
         await widget.webSocketService.connect();
       } catch (e) {
-        debugPrint("Error connecting to the server. Please try again.");
+        print("Error connecting to the server. Please try again.");
         _showErrorDialog("Connection Error", "Failed to connect to the server. Please try again.");
       }
     } else {
@@ -593,13 +592,18 @@ class CustomButton extends StatelessWidget {
     if (choice == '1') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(websocketServiceContent);
-
-      debugPrint('Generated WebSocket setup files.');
+      Process.runSync('flutter', ['pub', 'add', 'web_socket_channel'],
+          runInShell: true);
+      print('Generated WebSocket setup files.');
     } else if (choice == '2') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(socketIoClientContent);
 
-      debugPrint('Generated Socket.IO setup files.');
+      // Run the Flutter package command
+      Process.runSync('flutter', ['pub', 'add', 'socket_io_client'],
+          runInShell: true);
+
+      print('Generated Socket.IO setup files.');
     }
 
     // Write common files
@@ -610,11 +614,10 @@ class CustomButton extends StatelessWidget {
     // Write JSON files to the assets directory
     File('assets/connected.json').writeAsStringSync(connectedJsonContent);
     File('assets/connecting.json').writeAsStringSync(connectingJsonContent);
-    debugPrint('Generated JSON files in the assets directory.');
+    print('Generated JSON files in the assets directory.');
 
-    debugPrint('Generated socketconfig files.');
+    print('Generated socketconfig files.');
   } else {
-    debugPrint(
-        'Invalid choice. Please run the script again and select 1 or 2.');
+    print('Invalid choice. Please run the script again and select 1 or 2.');
   }
 }

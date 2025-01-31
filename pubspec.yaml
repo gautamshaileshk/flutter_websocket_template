@@ -1,6 +1,6 @@
 name: websocket_template
 description: "A Flutter package for setting up WebSocket connections with a pre-built UI and service."
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/gautamshaileshk/flutter_websocket_template
 
 environment:
