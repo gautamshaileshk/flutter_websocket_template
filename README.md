@@ -1,115 +1,122 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-This package provides WebSocket setup tools for Flutter applications.
-
-## Installation
-
-1. Add this package to your project:
-
-   flutter pub add websocket_template
-
-2. start using the package, Generate the configuration files
-   
-   dart run websocket_template:setup_wsconfig
-
-
-## Usage
-Here’s an updated and complete `README.md` file for your package, removing all `TODO` placeholders and ensuring it meets the required standards:
+Here is the updated **README.md** with the correct command:
 
 ---
 
-# WebSocket Template
+# **WebSocket Template**
 
 A Flutter package to simplify WebSocket setup and integration in Flutter applications. This package provides a pre-configured WebSocket service, a customizable UI for connecting to WebSocket servers, and other helpful utilities.
 
 ---
 
-## Features
-
-- **WebSocket Service**: A ready-to-use service for connecting to WebSocket servers, handling reconnection, and sending/receiving messages.
-- **Pre-built UI**: A page for entering WebSocket server details and connecting, designed for ease of use.
-- **Customizable Button**: A reusable and stylish button widget for performing actions like connecting to a server.
-
----
-
-## Getting Started
-
-### Prerequisites
-1. Ensure your project uses Flutter 2.5.0 or later.
-2. Add the required dependencies for `shared_preferences`, `web_socket_channel`, and `lottie` (already included in this package).
+## **Features**
+✅ **WebSocket Service**: A ready-to-use service for connecting to WebSocket servers, handling reconnection, and sending/receiving messages.  
+✅ **Socket.IO Support**: Option to use Socket.IO instead of WebSockets.  
+✅ **Pre-built UI**: A user-friendly interface for entering WebSocket server details and connecting.  
+✅ **Automatic Reconnection**: Keeps your WebSocket connection alive with retry logic.  
+✅ **Customizable Button**: A reusable and stylish button widget for triggering actions like connecting to a server.  
+✅ **Shared Preferences Support**: Saves WebSocket server details for seamless user experience.  
 
 ---
 
-## Installation
+## **Getting Started**
 
-1. Add this package to your project:
-   ```bash
-   flutter pub add websocket_template
-   ```
-
-2. Generate the configuration files:
-   ```bash
-   dart run websocket_template:setup_wsconfig
-   ```
-
-   This will create the `lib/wsconfig` folder in your project with the following files:
-   - `websocket_service.dart`: A pre-built service for managing WebSocket connections.
-   - `urls_page.dart`: A UI for entering and saving WebSocket server details.
-   - `custom_button.dart`: A customizable button widget.
+### **Prerequisites**
+- Flutter **2.5.0+**
+- Dart **2.12+**
+- Dependencies already included:  
+  - `web_socket_channel` (for WebSockets)  
+  - `socket_io_client` (for Socket.IO)  
+  - `shared_preferences` (for saving WebSocket URLs)  
+  - `lottie` (for animations)  
 
 ---
 
-## Usage
+## **Installation**
 
-### WebSocket Service
-The `WebSocketService` class manages WebSocket connections and allows you to send and receive messages. It also includes automatic reconnection and manual disconnection support.
+### **1. Add this package to your project**
+```bash
+flutter pub add socket_config
+```
 
+### **2. Generate the configuration files**
+```bash
+dart run socket_config:setup_config
+```
+This command creates the `lib/socketconfig` directory with:
+- `websocket_service.dart` – WebSocket connection service.
+- `socketio_service.dart` – Alternative Socket.IO connection service.
+- `urls_page.dart` – UI for entering WebSocket URLs.
+- `custom_button.dart` – A customizable button widget.
+- `assets/connected.json` & `assets/connecting.json` – Lottie animations for UI feedback.
+
+---
+
+## **Usage**
+
+### **1. WebSocket Service**
+The `WebSocketService` class manages WebSocket connections, listens to messages, and supports automatic reconnection.
+
+#### **Example Usage**
 ```dart
-import 'package:websocket_template/wsconfig/websocket_service.dart';
+import 'package:socket_config/socketconfig/websocket_service.dart';
 
 void main() {
   final webSocketService = WebSocketService();
 
-  // Connect to a WebSocket server
+  // Connect to the WebSocket server
   webSocketService.connect();
 
-
-  // Listen to incoming messages
+  // Listen for incoming messages
   webSocketService.messages.listen((message) {
     print("Received: $message");
   });
+
+  // Send a message
+  webSocketService.send("Hello, WebSocket!");
 
   // Disconnect when done
   webSocketService.disconnect();
 }
 ```
 
-### UI for Server Configuration
-The `UrlsPage` widget provides an intuitive interface for entering and saving the WebSocket server URL. This page integrates seamlessly with the WebSocket service.
+---
 
+### **2. Socket.IO Service**
+If you prefer **Socket.IO** instead of WebSockets, you can use `SocketIOService`.
+
+#### **Example Usage**
+```dart
+import 'package:socket_config/socketconfig/socketio_service.dart';
+
+void main() {
+  final socketIOService = SocketIOService();
+
+  // Connect to the Socket.IO server
+  socketIOService.connect();
+
+  // Listen for incoming messages
+  socketIOService.messages.listen((message) {
+    print("Received: $message");
+  });
+
+  // Send a message
+  socketIOService.send("Hello, Socket.IO!");
+
+  // Disconnect when done
+  socketIOService.disconnect();
+}
+```
+
+---
+
+### **3. UI for WebSocket Configuration**
+The package includes a **pre-built UI** for users to enter and save WebSocket URLs.  
+
+#### **Example Usage**
 ```dart
 import 'package:flutter/material.dart';
-import 'package:websocket_template/wsconfig/urls_page.dart';
-import 'package:websocket_template/wsconfig/websocket_service.dart';
+import 'package:socket_config/socketconfig/urls_page.dart';
+import 'package:socket_config/socketconfig/websocket_service.dart';
 
 class MyApp extends StatelessWidget {
   final webSocketService = WebSocketService();
@@ -122,12 +129,16 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+✅ Users enter the **WebSocket URL** → Click **Connect** → The app connects automatically.
 
-### Custom Button
-The `CustomButton` widget is a stylish button for user interactions.
+---
 
+### **4. Custom Button Widget**
+A **reusable and stylish button** for user actions like connecting to a server.
+
+#### **Example Usage**
 ```dart
-import 'package:websocket_template/wsconfig/custom_button.dart';
+import 'package:socket_config/socketconfig/custom_button.dart';
 
 CustomButton(
   text: "Connect",
@@ -140,23 +151,45 @@ CustomButton(
 
 ---
 
-## Example
-
-For a complete implementation, see the `/example` folder in this repository.
+## **Example App**
+A complete example is available in the `/example` folder.
 
 ---
 
-## Additional Information
+## **FAQ**
 
-### Repository and Issues
-For more information, visit the [GitHub repository](https://github.com/gautamshaileshk/flutter_websocket_template). Please file any issues or feature requests there.
+### **1. How do I switch between WebSocket and Socket.IO?**
+Run the command:
+```bash
+dart run socket_config:setup_config
+```
+You'll be prompted to select:
+- `1` for **WebSocket**
+- `2` for **Socket.IO**  
+The corresponding configuration files will be generated.
 
-### Contributing
-We welcome contributions! To contribute:
+### **2. What happens if the connection is lost?**
+- The service automatically **attempts reconnection** every few seconds.
+- A **manual disconnect** prevents automatic reconnection.
+
+### **3. Can I customize the UI?**
+Yes! The `urls_page.dart` file is fully editable.
+
+---
+
+## **Contributing**
+We welcome contributions! Follow these steps:
 1. Fork the repository.
-2. Create a branch for your feature or bugfix.
-3. Submit a pull request with detailed explanations.
+2. Create a branch (`feature/your-feature`).
+3. Submit a pull request.
+
+For major changes, please open an issue first to discuss.
 
 ---
 
-This README.md should now satisfy the requirements for publication. Be sure to replace placeholder links (e.g., `https://github.com/gautamshaileshk/flutter_websocket_template`) with the actual URLs for your package's repository.
+## **Support & Issues**
+For bugs, feature requests, or questions, visit the [GitHub Issues](https://github.com/gautamshaileshk/flutter_websocket_template).
+
+---
+
+This **README** now reflects the correct command `dart run socket_config:setup_config`. 🚀
