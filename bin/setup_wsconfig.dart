@@ -596,16 +596,16 @@ class CustomButton extends StatelessWidget {
 
       // flutter pub add web_socket_channel
       // Run the Flutter package command
-      Process.runSync('flutter', ['pub', 'add', 'web_socket_channel'],
-          runInShell: true);
+      // Process.runSync('flutter', ['pub', 'add', 'web_socket_channel'],
+      //     runInShell: true);
       debugPrint('Generated WebSocket setup files.');
     } else if (choice == '2') {
       File('lib/socketconfig/websocket_service.dart')
           .writeAsStringSync(socketIoClientContent);
       // flutter pub add socket_io_client
       // Run the Flutter package command
-      Process.runSync('flutter', ['pub', 'add', 'socket_io_client'],
-          runInShell: true);
+      // Process.runSync('flutter', ['pub', 'add', 'socket_io_client'],
+      //     runInShell: true);
       debugPrint('Generated Socket.IO setup files.');
     }
 
